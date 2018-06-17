@@ -23,5 +23,13 @@ endofthemonthec2amizip: endofthemonthec2ami
 	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
 	@zip endofthemonthec2ami.zip ./endofthemonthec2ami
 
+purgeami:
+	@echo "$(OK_COLOR)==> Building... $(NO_COLOR)"
+	@GOOS=linux GOARCH=amd64 go build -o purgeami purgeami.go
+
+purgeamizip: purgeami
+	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
+	@zip purgeami.zip ./purgeami
+
 clean:
-	@rm -rf ec2ami ec2ami.zip endofthemonthec2ami endofthemonthec2ami.zip
+	@rm -rf ec2ami ec2ami.zip endofthemonthec2ami endofthemonthec2ami.zip purgeami.zip purgeami
