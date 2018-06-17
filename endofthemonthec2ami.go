@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/kelseyhightower/envconfig"
 
 	"github.com/aws/aws-sdk-go/aws"
 
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
@@ -29,6 +29,11 @@ type SnapperInstance struct {
 	imageDate  string
 	Owners     []*string
 	cronenv    string
+}
+
+// CheckEndOfMonth check end of month
+func CheckEndOfMonth() bool {
+	return time.Now().Add(+24*time.Hour).Day() == 1
 }
 
 // CreateImageWithInstancesID is create ami from instanceID
@@ -83,31 +88,39 @@ func GetInstanceTagName(ec2svc ec2iface.EC2API, InstainceID string) string {
 	return ""
 }
 
-func dailyec2ami() {
-	imageDate := time.Now().Format("2006010215")
-
-	var sp Specification
-	if err := envconfig.Process("", &sp); err != nil {
-		fmt.Println(err)
-	}
-	// Load session from shared config
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
-	// Create new ec2 client
-	ec2Svc := ec2.New(sess)
-	for _, i := range sp.InstaincesList {
-		s := SnapperInstance{
-			InstanceID: i,
-			tagName:    GetInstanceTagName(ec2Svc, i),
-			imageDate:  imageDate,
-			cronenv:    sp.CronENV,
+func endofthemonthec2ami() {
+	if CheckEndOfMonth() {
+		DataFormat := map[string]string{
+			"daily":   "2006010215",
+			"monthly": "20060102",
 		}
-		s.CreateImageWithInstancesID(ec2Svc)
+
+		var sp Specification
+		if err := envconfig.Process("", &sp); err != nil {
+			fmt.Println(err)
+		}
+		imageDate := time.Now().Format(DataFormat[sp.CronENV])
+		// Load session from shared config
+		sess := session.Must(session.NewSessionWithOptions(session.Options{
+			SharedConfigState: session.SharedConfigEnable,
+		}))
+
+		// Create new ec2 client
+		ec2Svc := ec2.New(sess)
+		for _, i := range sp.InstaincesList {
+			s := SnapperInstance{
+				InstanceID: i,
+				tagName:    GetInstanceTagName(ec2Svc, i),
+				imageDate:  imageDate,
+				cronenv:    sp.CronENV,
+			}
+			s.CreateImageWithInstancesID(ec2Svc)
+		}
+	} else {
+		fmt.Println("No end of the month")
 	}
 }
 
 func main() {
-	lambda.Start(dailyec2ami)
+	lambda.Start(endofthemonthec2ami)
 }

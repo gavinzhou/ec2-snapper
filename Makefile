@@ -15,5 +15,13 @@ ec2amizip: ec2ami
 	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
 	@zip ec2ami.zip ./ec2ami
 
+endofthemonthec2ami:
+	@echo "$(OK_COLOR)==> Building... $(NO_COLOR)"
+	@GOOS=linux GOARCH=amd64 go build -o endofthemonthec2ami endofthemonthec2ami.go
+
+endofthemonthec2amizip: endofthemonthec2ami
+	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
+	@zip endofthemonthec2ami.zip ./endofthemonthec2ami
+
 clean:
-	@rm -rf ec2ami ec2ami.zip
+	@rm -rf ec2ami ec2ami.zip endofthemonthec2ami endofthemonthec2ami.zip
