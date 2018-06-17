@@ -86,7 +86,6 @@ func GetInstanceTagName(ec2svc ec2iface.EC2API, InstainceID string) string {
 func dailyec2ami() {
 	imageDate := time.Now().Format("2006010215")
 
-	// InstaincesList := []string{"i-0419c138f7c51eea4", "i-0b65e6a087dabbf14"}
 	var sp Specification
 	if err := envconfig.Process("", &sp); err != nil {
 		fmt.Println(err)
