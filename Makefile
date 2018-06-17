@@ -7,13 +7,13 @@ WARN_COLOR=\033[33;01m
 
 all: clean zip
 
-build:
+daily:
 	@echo "$(OK_COLOR)==> Building... $(NO_COLOR)"
-	@GOOS=linux GOARCH=amd64 go build -o ec2ami
+	@GOOS=linux GOARCH=amd64 go build -o dailyec2ami dailyec2ami.go
 
-zip: build
+dailyzip: daily
 	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
-	@zip handler.zip ./ec2ami
+	@zip dailyec2ami.zip ./dailyec2ami
 
 clean:
-	@rm -rf ec2ami handler.zip
+	@rm -rf dailyec2ami dailyec2ami.zip

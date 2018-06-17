@@ -83,7 +83,7 @@ func GetInstanceTagName(ec2svc ec2iface.EC2API, InstainceID string) string {
 	return ""
 }
 
-func ec2ami() {
+func dailyec2ami() {
 	imageDate := time.Now().Format("2006010215")
 
 	// InstaincesList := []string{"i-0419c138f7c51eea4", "i-0b65e6a087dabbf14"}
@@ -110,5 +110,5 @@ func ec2ami() {
 }
 
 func main() {
-	lambda.Start(ec2ami)
+	lambda.Start(dailyec2ami)
 }
