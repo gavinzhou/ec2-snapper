@@ -84,17 +84,11 @@ func GetInstanceTagName(ec2svc ec2iface.EC2API, InstainceID string) string {
 }
 
 func ec2ami() {
-	const (
-		DateFormat = "20060102"
-	)
-
-	nowTime := time.Now()
-	imageDate := nowTime.Format(DateFormat)
+	imageDate := time.Now().Format("2006010215")
 
 	// InstaincesList := []string{"i-0419c138f7c51eea4", "i-0b65e6a087dabbf14"}
 	var sp Specification
-	err := envconfig.Process("", &sp)
-	if err != nil {
+	if err := envconfig.Process("", &sp); err != nil {
 		fmt.Println(err)
 	}
 	// Load session from shared config

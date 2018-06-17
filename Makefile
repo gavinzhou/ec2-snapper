@@ -9,11 +9,11 @@ all: clean zip
 
 build:
 	@echo "$(OK_COLOR)==> Building... $(NO_COLOR)"
-	@GOOS=linux GOARCH=amd64 go build -o main
+	@GOOS=linux GOARCH=amd64 go build -o ec2ami
 
 zip: build
 	@echo "$(OK_COLOR)==> Zipping... $(NO_COLOR)"
-	@zip handler.zip ./main
+	@zip handler.zip ./ec2ami
 
 clean:
-	@rm -rf main handler.zip
+	@rm -rf ec2ami handler.zip
