@@ -41,10 +41,10 @@ func (s Specification) ListAllBackupImages(ec2svc ec2iface.EC2API) []string {
 		return AMILists
 	}
 	for _, i := range res.Images {
-		if strings.Contains(*i.Name, "monthly-") && CheckPurgeDays(*i.CreationDate, s.DailyPurge) {
+		if strings.Contains(*i.Name, "daily-") && CheckPurgeDays(*i.CreationDate, s.DailyPurge) {
 			AMILists = append(AMILists, *i.ImageId)
 		}
-		if strings.Contains(*i.Name, "daily-") && CheckPurgeDays(*i.CreationDate, s.MonthlyPurge) {
+		if strings.Contains(*i.Name, "monthly-") && CheckPurgeDays(*i.CreationDate, s.MonthlyPurge) {
 			AMILists = append(AMILists, *i.ImageId)
 		}
 	}
